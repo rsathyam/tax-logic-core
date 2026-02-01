@@ -1,8 +1,28 @@
 /**
- * Main Tax Optimizer Engine
- * Orchestrates all optimization strategies and provides recommendations
+ * ============================================================================
+ * TAX LOGIC CORE - MAIN OPTIMIZATION ENGINE
+ * ============================================================================
  * 
- * 2025 OBBBA Updates: Integrated Augusta Rule, K-1, AMT, and enhanced citations
+ * This file orchestrates all tax optimization strategies and provides
+ * actionable recommendations to reduce tax liability.
+ * 
+ * PHILOSOPHY:
+ * Every optimization in this library is:
+ * 1. LEGAL - Based on established tax law
+ * 2. CITED - Includes IRS authority (IRC section, Publication, Form)
+ * 3. ACTIONABLE - Provides specific steps to implement
+ * 4. AUDITABLE - Community can verify and correct
+ * 
+ * DISCLAIMER:
+ * This is NOT tax advice. Tax laws are complex and depend on your specific
+ * situation. Always consult a qualified tax professional before implementing
+ * any tax strategy.
+ * 
+ * COMMUNITY CONTRIBUTION:
+ * Found an error? Have a suggestion? Open an issue:
+ * https://github.com/rsathyam/tax-logic-core/issues
+ * 
+ * ============================================================================
  */
 
 import { calculateTotalTax, calculateTaxWithOverrides, STANDARD_DEDUCTIONS_2025 } from '../calculations/calculateTax.js';
@@ -18,17 +38,53 @@ import { analyzeAugustaRuleOptimization } from './augustaRuleOptimizer';
 import { analyzeK1Optimizations } from './k1Optimizer';
 import { analyzeAMTOptimizations } from './amtOptimizer';
 
+
+// ============================================================================
+// OPTIMIZATION DIFFICULTY LEVELS
+// ============================================================================
 /**
- * Optimization difficulty levels
+ * Every optimization is rated by implementation difficulty:
+ * 
+ * EASY: Can be done immediately on this tax return
+ * - No lifestyle changes required
+ * - Example: Switching from Standard to Itemized deduction
+ * - Example: Claiming a credit you missed
+ * 
+ * MEDIUM: Requires some planning or documentation
+ * - May need to gather records
+ * - Might involve timing of income/expenses
+ * - Example: Setting up HSA before year-end
+ * - Example: Making estimated tax payments
+ * 
+ * HARD: Requires significant changes or professional help
+ * - Major financial or business decisions
+ * - Complex tax elections
+ * - Example: S-Corp election
+ * - Example: Real Estate Professional status
+ * - Example: Moving to a different state
  */
 export const DIFFICULTY = {
-    EASY: 'easy',       // Can be done immediately on this return
-    MEDIUM: 'medium',   // Requires some planning or documentation
-    HARD: 'hard',       // Requires significant changes or professional help
+    EASY: 'easy',
+    MEDIUM: 'medium',
+    HARD: 'hard',
 };
 
+
+// ============================================================================
+// OPTIMIZATION CATEGORIES
+// ============================================================================
 /**
- * Optimization categories
+ * Optimizations are grouped into categories for easy navigation:
+ * 
+ * FILING_STATUS: Changing how you file (Single vs HOH vs MFJ)
+ * DEDUCTIONS: Itemized vs Standard, maximizing deductions
+ * RETIREMENT: 401(k), IRA, SEP, Solo 401(k), HSA
+ * CREDITS: Child Tax Credit, EITC, education, energy
+ * SELF_EMPLOYMENT: SE tax reduction, QBI, business structure
+ * CAPITAL_GAINS: Loss harvesting, holding periods, NIIT
+ * STATE: State-specific strategies, relocation, PTET
+ * INCOME_TIMING: Deferral, acceleration, tax bracket management
+ * COMPLIANCE: Required filings, penalties, deadlines (informational)
  */
 export const CATEGORY = {
     FILING_STATUS: 'Filing Status',
@@ -39,70 +95,125 @@ export const CATEGORY = {
     CAPITAL_GAINS: 'Capital Gains',
     STATE: 'State',
     INCOME_TIMING: 'Income Timing',
+    COMPLIANCE: 'Compliance',
 };
 
+
+// ============================================================================
+// MAIN OPTIMIZATION FUNCTION
+// ============================================================================
 /**
- * Main optimization function - analyzes form and returns all recommendations
+ * Analyze a tax form and return all applicable optimization recommendations
+ * 
+ * HOW IT WORKS:
+ * 1. Calculate the current tax liability
+ * 2. Run each specialized optimizer module
+ * 3. Collect all recommendations
+ * 4. Filter to beneficial ones (positive savings)
+ * 5. Sort by potential savings (highest first)
+ * 6. Generate summary statistics
+ * 
+ * OPTIMIZER MODULES:
+ * - Filing Status: Can changing status reduce taxes?
+ * - Deductions: Itemized vs Standard, maximize deductions
+ * - Retirement: Max out tax-advantaged accounts
+ * - Credits: Are you missing any credits?
+ * - Self-Employment: SE tax, QBI, S-Corp election
+ * - Capital Gains: Loss harvesting, 0% bracket
+ * - State: State-specific strategies
+ * - Augusta Rule: §280A 14-day rental for business owners
+ * - K-1: Pass-through optimization
+ * - AMT: Alternative Minimum Tax planning
+ * 
+ * @param {Object} form - Tax form data with all income/deduction/credit fields
+ * @returns {Object} - Optimization results:
+ *   - currentTax: Current calculated tax liability
+ *   - optimizations: Array of optimization objects
+ *   - totalPotentialSavings: Sum of all potential savings
+ *   - optimizedTax: Tax after applying all optimizations
+ *   - summary: Statistics and top recommendations
  */
 export function analyzeTaxOptimizations(form) {
+    // Get state for state-specific optimizations
     const state = form.state || form.stateOfResidence || '';
 
-    // Calculate current tax liability
+    // Step 1: Calculate current tax liability
+    // This is the baseline we're trying to reduce
     const currentTax = calculateTotalTax(form);
 
-    // Gather all optimizations from each module
+    // Step 2: Gather all optimizations from each module
+    // Each module is wrapped in try/catch so one failure doesn't break all
     const allOptimizations = [];
 
+    // ----- FILING STATUS OPTIMIZER -----
+    // Analyzes whether a different filing status would reduce taxes.
+    // Common savings: Single → Head of Household, MFJ vs MFS comparison
     try {
-        // Filing Status Optimizations
         const filingStatusOpts = analyzeFilingStatusOptimizations(form);
         allOptimizations.push(...filingStatusOpts);
     } catch (e) {
         console.warn('Filing status optimizer error:', e);
     }
 
+    // ----- DEDUCTION OPTIMIZER -----
+    // Compares standard vs itemized, identifies missing deductions.
+    // Analyzes: SALT cap impact, bunching strategy, charity, mortgage interest
     try {
-        // Deduction Optimizations
         const deductionOpts = analyzeDeductionOptimizations(form);
         allOptimizations.push(...deductionOpts);
     } catch (e) {
         console.warn('Deduction optimizer error:', e);
     }
 
+    // ----- RETIREMENT OPTIMIZER -----
+    // Identifies opportunities to increase retirement contributions.
+    // Analyzes: 401(k), IRA, Roth conversions, HSA (triple tax advantage)
+    // These reduce taxable income AND build retirement wealth
     try {
-        // Retirement Optimizations
         const retirementOpts = analyzeRetirementOptimizations(form);
         allOptimizations.push(...retirementOpts);
     } catch (e) {
         console.warn('Retirement optimizer error:', e);
     }
 
+    // ----- CREDITS OPTIMIZER -----
+    // Identifies missed tax credits.
+    // Credits are MORE valuable than deductions (dollar-for-dollar reduction)
+    // Analyzes: Child Tax Credit, EITC, Education, Child Care, Energy
     try {
-        // Credits Optimizations
         const creditsOpts = analyzeCreditsOptimizations(form);
         allOptimizations.push(...creditsOpts);
     } catch (e) {
         console.warn('Credits optimizer error:', e);
     }
 
+    // ----- SELF-EMPLOYMENT OPTIMIZER -----
+    // Specialized strategies for self-employed individuals.
+    // Analyzes: SE tax reduction, QBI deduction, S-Corp election,
+    // SEP-IRA vs Solo 401(k), home office, health insurance
     try {
-        // Self-Employment Optimizations
         const seOpts = analyzeSelfEmploymentOptimizations(form);
         allOptimizations.push(...seOpts);
     } catch (e) {
         console.warn('Self-employment optimizer error:', e);
     }
 
+    // ----- CAPITAL GAINS OPTIMIZER -----
+    // Strategies for investment income.
+    // Analyzes: Tax-loss harvesting, 0% bracket opportunity, wash sales,
+    // NIIT planning, holding periods, Qualified Opportunity Zones
     try {
-        // Capital Gains Optimizations
         const cgOpts = analyzeCapitalGainsOptimizations(form);
         allOptimizations.push(...cgOpts);
     } catch (e) {
         console.warn('Capital gains optimizer error:', e);
     }
 
+    // ----- STATE OPTIMIZER -----
+    // State-specific tax strategies.
+    // Analyzes: No-income-tax states, 529 deductions, credits,
+    // state-specific deductions, residency considerations
     try {
-        // State-Specific Optimizations
         if (state) {
             const stateOpts = analyzeStateOptimizations(form, state);
             allOptimizations.push(...stateOpts);
@@ -111,41 +222,53 @@ export function analyzeTaxOptimizations(form) {
         console.warn('State optimizer error:', e);
     }
 
+    // ----- AUGUSTA RULE OPTIMIZER -----
+    // Section 280A(g) - 14-day tax-free rental strategy
+    // For business owners who can rent their home to their business
+    // LEGAL AUTHORITY: IRC §280A(g)
     try {
-        // Augusta Rule (§280A) - 14-day rental for business owners
         const augustaOpts = analyzeAugustaRuleOptimization(form);
         allOptimizations.push(...augustaOpts);
     } catch (e) {
         console.warn('Augusta Rule optimizer error:', e);
     }
 
+    // ----- K-1 OPTIMIZER -----
+    // Pass-through entity optimization (S-Corps, Partnerships)
+    // Analyzes: QBI eligibility, reasonable compensation, SE tax,
+    // basis tracking, guaranteed payments
     try {
-        // K-1 Pass-Through Optimization
         const k1Opts = analyzeK1Optimizations(form);
         allOptimizations.push(...k1Opts);
     } catch (e) {
         console.warn('K-1 optimizer error:', e);
     }
 
+    // ----- AMT OPTIMIZER -----
+    // Alternative Minimum Tax analysis and planning
+    // Analyzes: AMT exposure, ISO exercise timing, SALT impact,
+    // AMT credit carryforward
     try {
-        // AMT Analysis and Planning
         const amtOpts = analyzeAMTOptimizations(form);
         allOptimizations.push(...amtOpts);
     } catch (e) {
         console.warn('AMT optimizer error:', e);
     }
 
-    // Filter to only beneficial optimizations and sort by savings
+    // Step 3: Filter and sort optimizations
+    // Only show optimizations with positive savings potential
     const beneficialOptimizations = allOptimizations
         .filter(opt => opt.potentialSavings > 0)
         .sort((a, b) => b.potentialSavings - a.potentialSavings);
 
-    // Calculate totals
+    // Step 4: Calculate total potential savings
+    // Note: Savings may not be fully additive (some optimizations are mutually exclusive)
     const totalPotentialSavings = beneficialOptimizations.reduce(
         (sum, opt) => sum + (opt.potentialSavings || 0),
         0
     );
 
+    // Return comprehensive results
     return {
         currentTax,
         optimizations: beneficialOptimizations,
@@ -155,10 +278,21 @@ export function analyzeTaxOptimizations(form) {
     };
 }
 
+
 /**
- * Generate summary of optimizations by category
+ * Generate summary statistics for optimizations
+ * 
+ * Provides quick overview:
+ * - Total number of recommendations
+ * - Breakdown by category
+ * - Top recommendation
+ * - Number of "easy wins" (low-effort, high-value)
+ * 
+ * @param {Array} optimizations - Array of optimization objects
+ * @returns {Object} - Summary statistics
  */
 function generateSummary(optimizations) {
+    // Group by category
     const byCategory = {};
 
     optimizations.forEach(opt => {
@@ -180,19 +314,42 @@ function generateSummary(optimizations) {
     };
 }
 
+
+// ============================================================================
+// WHAT-IF SCENARIO ANALYSIS
+// ============================================================================
 /**
  * Run a "what-if" scenario with selected optimizations
+ * 
+ * USE CASE:
+ * User wants to see the impact of implementing specific optimizations.
+ * "What if I max out my 401(k) AND switch to Head of Household?"
+ * 
+ * HOW IT WORKS:
+ * 1. Get all available optimizations
+ * 2. Filter to user-selected ones
+ * 3. Apply form overrides from each optimization
+ * 4. Recalculate tax with modified form
+ * 5. Return comparison (original vs. optimized)
+ * 
+ * @param {Object} form - Original form data
+ * @param {Array} selectedOptimizationIds - Array of optimization IDs to apply
+ * @returns {Object} - Scenario results:
+ *   - originalTax: Tax before optimizations
+ *   - newTax: Tax after optimizations
+ *   - savings: Difference (positive = savings)
+ *   - selectedOptimizations: Applied optimizations
  */
 export function runWhatIfScenario(form, selectedOptimizationIds) {
     // Get all possible optimizations
     const { optimizations } = analyzeTaxOptimizations(form);
 
-    // Filter to selected
+    // Filter to selected ones
     const selectedOpts = optimizations.filter(opt =>
         selectedOptimizationIds.includes(opt.id)
     );
 
-    // Build modified form based on optimizations
+    // Build modified form by applying each optimization's formOverrides
     let modifiedForm = { ...form };
 
     selectedOpts.forEach(opt => {
@@ -201,7 +358,7 @@ export function runWhatIfScenario(form, selectedOptimizationIds) {
         }
     });
 
-    // Calculate new tax
+    // Calculate taxes before and after
     const originalTax = calculateTotalTax(form);
     const newTax = calculateTotalTax(modifiedForm);
 
@@ -213,22 +370,50 @@ export function runWhatIfScenario(form, selectedOptimizationIds) {
     };
 }
 
+
+// ============================================================================
+// FILTERING UTILITIES
+// ============================================================================
+
 /**
  * Get optimizations filtered by category
+ * 
+ * @param {Array} optimizations - Array of optimization objects
+ * @param {string} category - Category to filter by (from CATEGORY enum)
+ * @returns {Array} - Filtered optimizations
+ * 
+ * EXAMPLE:
+ * const retirementOpts = getOptimizationsByCategory(results.optimizations, CATEGORY.RETIREMENT);
  */
 export function getOptimizationsByCategory(optimizations, category) {
     return optimizations.filter(opt => opt.category === category);
 }
 
+
 /**
  * Get optimizations filtered by difficulty
+ * 
+ * @param {Array} optimizations - Array of optimization objects
+ * @param {string} difficulty - Difficulty level (from DIFFICULTY enum)
+ * @returns {Array} - Filtered optimizations
+ * 
+ * EXAMPLE:
+ * const easyWins = getOptimizationsByDifficulty(results.optimizations, DIFFICULTY.EASY);
  */
 export function getOptimizationsByDifficulty(optimizations, difficulty) {
     return optimizations.filter(opt => opt.difficulty === difficulty);
 }
 
+
+// ============================================================================
+// FORMATTING UTILITIES
+// ============================================================================
+
 /**
  * Format currency for display
+ * 
+ * @param {number} amount - Dollar amount
+ * @returns {string} - Formatted string (e.g., "$12,345")
  */
 export function formatCurrency(amount) {
     return new Intl.NumberFormat('en-US', {
@@ -239,8 +424,22 @@ export function formatCurrency(amount) {
     }).format(amount);
 }
 
+
 /**
  * Calculate effective tax rate
+ * 
+ * Effective rate = (Total Tax / Total Income) × 100
+ * 
+ * This is different from marginal rate!
+ * - Marginal rate: Rate on the NEXT dollar of income
+ * - Effective rate: Average rate across ALL income
+ * 
+ * @param {number} tax - Total tax liability
+ * @param {number} income - Total income
+ * @returns {number} - Effective rate as percentage
+ * 
+ * EXAMPLE:
+ * calculateEffectiveRate(15000, 100000) → 15 (meaning 15%)
  */
 export function calculateEffectiveRate(tax, income) {
     if (income <= 0) return 0;
