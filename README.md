@@ -108,7 +108,11 @@ import {
   analyzeStateOptimizations,
   analyzeAugustaRuleOptimization,
   analyzeK1Optimizations,
-  analyzeAMTOptimizations
+  analyzeAMTOptimizations,
+  // New features
+  analyzeCryptoTaxOptimizations,
+  analyzeRealEstateProfessionalOptimizations,
+  analyzeInternationalTaxOptimizations,
 } from 'tax-logic-core/optimizations';
 ```
 
@@ -140,10 +144,10 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 ### Areas Needing Help
 
-- [ ] Additional state tax rules
-- [ ] Crypto tax handling
-- [ ] Real estate professional status
-- [ ] International tax provisions
+- [ ] Additional state tax rules (NY PTET, CA PTE, TX margin tax)
+- [x] Crypto tax handling ✅
+- [x] Real estate professional status ✅
+- [x] International tax provisions ✅
 - [ ] More test cases
 
 ### Reporting Bugs

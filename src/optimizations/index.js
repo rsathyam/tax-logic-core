@@ -33,3 +33,15 @@ export {
 
 export { analyzeK1Optimizations } from './k1Optimizer.js';
 export { analyzeAMTOptimizations } from './amtOptimizer.js';
+
+// Crypto tax handling
+export {
+    analyzeCryptoTaxOptimizations,
+    COST_BASIS_METHODS,
+} from './cryptoTaxOptimizer.js';
+
+// Real estate professional status
+export { analyzeRealEstateProfessionalOptimizations } from './realEstateProfessionalOptimizer.js';
+
+// International tax
+export { analyzeInternationalTaxOptimizations } from './internationalTaxOptimizer.js';
