@@ -43,12 +43,12 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/YOUR_USERNAME/tax-logic-core.git"
+        "url": "https://github.com/rsathyam/tax-logic-core.git"
     },
     "bugs": {
-        "url": "https://github.com/YOUR_USERNAME/tax-logic-core/issues"
+        "url": "https://github.com/rsathyam/tax-logic-core/issues"
     },
-    "homepage": "https://github.com/YOUR_USERNAME/tax-logic-core#readme",
+    "homepage": "https://github.com/rsathyam/tax-logic-core#readme",
     "devDependencies": {
         "eslint": "^9.0.0",
         "vitest": "^2.0.0"
