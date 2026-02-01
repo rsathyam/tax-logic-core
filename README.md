@@ -1,0 +1,162 @@
+# tax-logic-core
+
+> Open-source US federal and state tax calculation engine with optimization strategies
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/tax-logic-core.svg)](https://www.npmjs.com/package/tax-logic-core)
+
+## Overview
+
+**tax-logic-core** is a community-auditable, open-source JavaScript library for US federal and state tax calculations. Every calculation and optimization includes IRS citations for transparency and accuracy.
+
+### Why Open Source?
+
+Tax logic should be **transparent** and **auditable**. By open-sourcing the core calculations:
+- 🔍 Anyone can audit the math
+- 🐛 Community can find and fix bugs
+- 📚 IRS citations provide legal backing
+- 🤝 Contributions improve accuracy for everyone
+
+## Installation
+
+```bash
+npm install tax-logic-core
+```
+
+## Quick Start
+
+```javascript
+import { calculateTotalTax, analyzeTaxOptimizations } from 'tax-logic-core';
+
+// Calculate taxes
+const form = {
+  filingStatus: 'married',
+  totalWages: 150000,
+  taxableInterest: 5000,
+  // ... other form fields
+};
+
+const result = calculateTotalTax(form);
+console.log(`Total Tax: $${result.finalTax}`);
+
+// Find optimizations
+const optimizations = analyzeTaxOptimizations(form);
+console.log(`Potential Savings: $${optimizations.totalPotentialSavings}`);
+```
+
+## Features
+
+### Tax Calculations
+
+- **Federal Income Tax** (2025 brackets, OBBBA updates)
+- **State Income Tax** (50 states + DC)
+- **Self-Employment Tax** (Schedule SE)
+- **Capital Gains Tax** (0%, 15%, 20% brackets)
+- **Alternative Minimum Tax** (AMT)
+- **Net Investment Income Tax** (NIIT - 3.8%)
+
+### Optimization Strategies
+
+| Strategy | IRS Authority | Description |
+|----------|---------------|-------------|
+| QBI Deduction | §199A | 20% pass-through deduction |
+| Augusta Rule | §280A(g) | 14-day tax-free rental |
+| S-Corp Election | §1362 | SE tax savings |
+| Tax-Loss Harvesting | §1091 | Offset gains with losses |
+| Home Office | §280A | Business use of home |
+| SEP/Solo 401(k) | §408(k)/§401(k) | Retirement contributions |
+
+### IRS Citations
+
+Every optimization includes audit-proof citations:
+
+```javascript
+import { getAuthority } from 'tax-logic-core/authority';
+
+const qbi = getAuthority('qbiDeduction');
+// {
+//   irc: '§199A',
+//   publication: 'Publication 535',
+//   form: 'Form 8995 or Form 8995-A',
+//   regulation: 'Treas. Reg. §1.199A-1 through §1.199A-6'
+// }
+```
+
+## API Reference
+
+### Tax Calculations
+
+```javascript
+import { 
+  calculateTotalTax,
+  calculateFederalIncomeTax,
+  calculateStateTax,
+  calculateSelfEmploymentTax,
+  calculateCapitalGainsTax,
+  calculateAMT
+} from 'tax-logic-core/calculations';
+```
+
+### Optimizations
+
+```javascript
+import {
+  analyzeTaxOptimizations,
+  analyzeCapitalGainsOptimizations,
+  analyzeSelfEmploymentOptimizations,
+  analyzeRetirementOptimizations,
+  analyzeStateOptimizations,
+  analyzeAugustaRuleOptimization,
+  analyzeK1Optimizations,
+  analyzeAMTOptimizations
+} from 'tax-logic-core/optimizations';
+```
+
+### Tax Authority
+
+```javascript
+import {
+  TAX_AUTHORITY,
+  getCitation,
+  getAuthority,
+  formatAuthorityForDisplay
+} from 'tax-logic-core/authority';
+```
+
+## 2025 Tax Law Updates (OBBBA)
+
+This library includes updates for the One Big Beautiful Bill Act of 2025:
+
+- ✅ TCJA rates made permanent
+- ✅ SALT cap increased to $40,000
+- ✅ Section 179 limit raised to $2.5M
+- ✅ 100% bonus depreciation restored
+- ✅ Child Tax Credit increased to $2,200
+- ✅ New deductions: Tips ($25k), Overtime ($12.5k), Auto Loan ($10k)
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Areas Needing Help
+
+- [ ] Additional state tax rules
+- [ ] Crypto tax handling
+- [ ] Real estate professional status
+- [ ] International tax provisions
+- [ ] More test cases
+
+### Reporting Bugs
+
+Found an error in a calculation? Please:
+1. Open an issue with the specific scenario
+2. Include expected vs actual result
+3. Reference the applicable IRS authority if known
+
+## Disclaimer
+
+⚠️ **This software is for informational purposes only.** It is not tax advice. Always consult a qualified tax professional for your specific situation. See [LICENSE](LICENSE) for full disclaimer.
+
+## License
+
+MIT © TaxOptimizer Community Contributors

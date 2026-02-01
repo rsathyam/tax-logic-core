@@ -1,0 +1,59 @@
+{
+    "name": "tax-logic-core",
+    "version": "1.0.0",
+    "description": "Open-source US federal and state tax calculation engine with optimization strategies. Community-auditable tax logic with IRS citations.",
+    "main": "src/index.js",
+    "module": "src/index.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./src/index.cjs"
+        },
+        "./calculations": "./src/calculations/index.js",
+        "./optimizations": "./src/optimizations/index.js",
+        "./authority": "./src/utils/taxAuthority.js"
+    },
+    "files": [
+        "src",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "test": "vitest",
+        "test:coverage": "vitest --coverage",
+        "lint": "eslint src/",
+        "build": "echo 'No build step required for ESM'"
+    },
+    "keywords": [
+        "tax",
+        "1040",
+        "irs",
+        "tax-calculator",
+        "federal-tax",
+        "state-tax",
+        "tax-optimization",
+        "qbi",
+        "capital-gains",
+        "amt",
+        "augusta-rule",
+        "open-source"
+    ],
+    "author": "TaxOptimizer Community",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/YOUR_USERNAME/tax-logic-core.git"
+    },
+    "bugs": {
+        "url": "https://github.com/YOUR_USERNAME/tax-logic-core/issues"
+    },
+    "homepage": "https://github.com/YOUR_USERNAME/tax-logic-core#readme",
+    "devDependencies": {
+        "eslint": "^9.0.0",
+        "vitest": "^2.0.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}
