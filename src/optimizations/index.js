@@ -45,3 +45,10 @@ export { analyzeRealEstateProfessionalOptimizations } from './realEstateProfessi
 
 // International tax
 export { analyzeInternationalTaxOptimizations } from './internationalTaxOptimizer.js';
+
+// State PTET (SALT workaround)
+export {
+    analyzeStatePTETOptimizations,
+    STATE_PTET_PROGRAMS,
+    TX_MARGIN_TAX,
+} from './statePTETOptimizer.js';

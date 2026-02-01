@@ -357,6 +357,173 @@ export const SCORP_OWNER_PROFILE = {
 };
 
 /**
+ * Crypto Investor with DeFi Activity
+ */
+export const CRYPTO_INVESTOR_PROFILE = {
+    name: 'Crypto Investor with DeFi',
+    description: 'Active crypto trader with staking, DeFi, and NFT activity',
+    form: {
+        filingStatus: 'single',
+        state: 'WA',
+
+        // W-2 Income
+        totalWages: 120000,
+
+        // Cryptocurrency
+        hasCryptocurrency: true,
+        cryptocurrency: {
+            gains: 45000,
+            losses: 15000,
+            costBasisMethod: 'fifo',
+            staking: 5000,
+            airdrops: 2000,
+            shortTermGains: 30000,
+            hasNFTs: true,
+            nftGains: 8000,
+        },
+        cryptoGains: 45000,
+        cryptoLosses: 15000,
+        stakingIncome: 5000,
+        airdropValue: 2000,
+
+        // Has DeFi activity
+        hasDeFi: true,
+    },
+    expectedOptimizations: [
+        'crypto-cost-basis-method',
+        'crypto-tax-loss-harvesting',
+        'crypto-staking-mining-income',
+        'crypto-airdrop-reporting',
+        'crypto-holding-period',
+        'crypto-nft-taxes',
+        'crypto-defi-taxes',
+    ],
+};
+
+/**
+ * US Expat Living Abroad
+ */
+export const US_EXPAT_PROFILE = {
+    name: 'US Expat',
+    description: 'American living and working abroad with foreign accounts',
+    form: {
+        filingStatus: 'married',
+        state: null, // No state residence
+
+        // Foreign earned income
+        hasForeignIncome: true,
+        foreignEarnedIncome: 180000,
+        foreignTaxPaid: 35000,
+        livesAbroad: true,
+        meetsPhysicalPresence: true,
+        daysOutsideUS: 340,
+
+        // Foreign housing
+        foreignHousingExpenses: 48000,
+
+        // Foreign accounts
+        hasForeignAccounts: true,
+        foreignBankAccounts: true,
+        maxForeignAccountValue: 150000,
+        totalForeignAssets: 250000,
+
+        // Foreign country
+        foreignCountry: 'UK',
+
+        // No US property
+        ownsHome: false,
+    },
+    expectedOptimizations: [
+        'intl-feie-eligible',
+        'intl-foreign-tax-credit',
+        'intl-feie-vs-ftc',
+        'intl-foreign-housing',
+        'intl-fbar-requirement',
+        'intl-fatca-8938',
+        'intl-treaty-benefits',
+    ],
+};
+
+/**
+ * NY Business Owner Eligible for PTET
+ */
+export const NY_PTET_PROFILE = {
+    name: 'NY Business Owner (PTET)',
+    description: 'New York S-Corp owner eligible for PTET election',
+    form: {
+        filingStatus: 'married',
+        state: 'NY',
+
+        // W-2 from S-Corp
+        totalWages: 150000,
+
+        // S-Corp K-1 income
+        hasSCorp: true,
+        hasScheduleK1: true,
+        sCorpIncome: 400000,
+        partnershipIncome: 0,
+        scheduleK1: {
+            ordinaryIncome: 400000,
+        },
+
+        // High SALT exposure
+        stateLocalTaxes: 85000, // Way over $40k cap
+
+        // Home
+        ownsHome: true,
+        mortgageInterest: 30000,
+        realEstateTaxes: 25000,
+        itemizedDeductions: true,
+    },
+    expectedOptimizations: [
+        'ptet-ny-opportunity',
+        'k1-qbi-deduction',
+    ],
+};
+
+/**
+ * Real Estate Professional (Qualifies)
+ */
+export const REP_QUALIFIED_PROFILE = {
+    name: 'Qualified Real Estate Professional',
+    description: 'Full-time real estate professional with rental losses',
+    form: {
+        filingStatus: 'married',
+        state: 'NV',
+
+        // Minimal W-2 (spouse)
+        totalWages: 50000,
+
+        // Rental properties with losses
+        hasScheduleE: true,
+        hasRentalIncome: true,
+        scheduleE: {
+            rentalIncome: 120000,
+            rentalExpenses: 180000,
+            depreciation: 60000,
+            netIncome: -60000,
+        },
+
+        // REP qualification
+        realEstateHours: 1200,
+        otherWorkHours: 400,
+        numberOfRentalProperties: 4,
+        rentalPropertyHours: 600,
+
+        // No suspended losses
+        suspendedPassiveLosses: 0,
+
+        // Home
+        ownsHome: true,
+    },
+    expectedOptimizations: [
+        'rep-status-qualified',
+        'rep-grouping-election',
+        'rep-material-participation',
+    ],
+};
+
+/**
  * All test profiles for batch testing
  */
 export const ALL_TEST_PROFILES = [
@@ -366,6 +533,10 @@ export const ALL_TEST_PROFILES = [
     W2_SIDE_BUSINESS_PROFILE,
     RETIREE_PROFILE,
     SCORP_OWNER_PROFILE,
+    CRYPTO_INVESTOR_PROFILE,
+    US_EXPAT_PROFILE,
+    NY_PTET_PROFILE,
+    REP_QUALIFIED_PROFILE,
 ];
 
 /**
@@ -397,3 +568,4 @@ export function runTestProfiles(analyzeFunction) {
         }
     });
 }
+

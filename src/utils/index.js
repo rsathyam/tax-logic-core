@@ -18,5 +18,9 @@ export {
     W2_SIDE_BUSINESS_PROFILE,
     RETIREE_PROFILE,
     SCORP_OWNER_PROFILE,
+    CRYPTO_INVESTOR_PROFILE,
+    US_EXPAT_PROFILE,
+    NY_PTET_PROFILE,
+    REP_QUALIFIED_PROFILE,
     runTestProfiles,
 } from './testProfiles.js';
