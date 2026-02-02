@@ -142,13 +142,12 @@ This library includes updates for the One Big Beautiful Bill Act of 2025:
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-### Areas Needing Help
+### How You Can Help
 
-- [ ] Additional state tax rules (NY PTET, CA PTE, TX margin tax)
-- [x] Crypto tax handling ✅
-- [x] Real estate professional status ✅
-- [x] International tax provisions ✅
-- [ ] More test cases
+- 🔍 **Review calculations** - Verify formulas against IRS publications
+- 📝 **Add test cases** - Create scenarios to validate edge cases
+- 📚 **Improve documentation** - Add IRS citations and explanations
+- 🐛 **Report bugs** - Found an error? Open an issue!
 
 ### Reporting Bugs
 

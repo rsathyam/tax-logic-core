@@ -523,10 +523,253 @@ export const REP_QUALIFIED_PROFILE = {
     ],
 };
 
+// ============================================================================
+// NEW TEST PROFILES FOR COMPREHENSIVE COVERAGE
+// ============================================================================
+
+/**
+ * Texas Business Owner (Margin Tax Scenario)
+ * Tests TX margin tax exemption and calculation methods
+ */
+export const TX_MARGIN_TAX_PROFILE = {
+    name: 'Texas Business Owner (Margin Tax)',
+    description: 'LLC owner in Texas with margin tax considerations',
+    form: {
+        filingStatus: 'married',
+        state: 'TX',
+
+        // W-2 from LLC
+        totalWages: 100000,
+
+        // LLC K-1 income
+        hasScheduleK1: true,
+        hasSCorp: true,
+        sCorpIncome: 300000,
+        scheduleK1: {
+            ordinaryIncome: 300000,
+        },
+
+        // Business revenue for margin tax
+        businessRevenue: 1800000,  // Under $2.47M exemption
+        costOfGoodsSold: 900000,
+        totalCompensation: 400000,
+        businessType: 'other',
+
+        // No state income tax, but has property
+        ownsHome: true,
+        realEstateTaxes: 15000,
+        mortgageInterest: 25000,
+    },
+    expectedOptimizations: [
+        'tx-margin-tax-exempt',
+        'k1-qbi-deduction',
+    ],
+};
+
+/**
+ * Married Filing Separately Comparison
+ * Tests MFJ vs MFS analysis (useful for student loan IBR)
+ */
+export const MFS_COMPARISON_PROFILE = {
+    name: 'Married Filing Separately Candidate',
+    description: 'Couple with income disparity and student loans',
+    form: {
+        filingStatus: 'married',  // Currently MFJ
+        state: 'CA',
+
+        // High earner spouse
+        totalWages: 180000,
+
+        // Lower earner spouse (has student loans on IBR)
+        spouseWages: 45000,
+        studentLoanInterest: 2500,
+        studentLoanBalance: 120000,
+        onIncomeDrivenRepayment: true,
+
+        // Itemized deductions
+        stateLocalTaxes: 25000,
+        mortgageInterest: 20000,
+        charityCash: 8000,
+        itemizedDeductions: true,
+
+        // Home
+        ownsHome: true,
+    },
+    expectedOptimizations: [
+        'filing-status-mfs-analysis',
+    ],
+};
+
+/**
+ * AMT ISO Exercise Profile
+ * Tests Incentive Stock Option exercise scenarios
+ */
+export const AMT_ISO_PROFILE = {
+    name: 'Tech Employee with ISO Exercise',
+    description: 'Employee exercising large ISO grant with AMT exposure',
+    form: {
+        filingStatus: 'single',
+        state: 'CA',
+
+        // W-2 Income
+        totalWages: 200000,
+
+        // ISO Exercise (AMT trigger)
+        hasISO: true,
+        isoExerciseSpread: 500000,  // Large spread triggers AMT
+        isoSharesExercised: 10000,
+        isoExercisePrice: 10,
+        isoFMVAtExercise: 60,
+
+        // Some capital gains from prior sales
+        hasScheduleD: true,
+        scheduleD: {
+            longTermGain: 50000,
+        },
+
+        // Standard deduction
+        itemizedDeductions: false,
+    },
+    expectedOptimizations: [
+        'amt-iso-trigger',
+        'amt-exposure',
+        'amt-planning-strategies',
+    ],
+};
+
+/**
+ * Teacher/Educator Profile
+ * Tests educator expense deduction and related credits
+ */
+export const TEACHER_PROFILE = {
+    name: 'K-12 Teacher',
+    description: 'Public school teacher with classroom expenses',
+    form: {
+        filingStatus: 'single',
+        state: 'TX',  // No state income tax
+
+        // Teacher salary
+        totalWages: 58000,
+
+        // Educator expenses
+        educatorExpenses: 300,  // Max is $300
+
+        // Additional classroom supplies (not deductible above line)
+        unreimbursedExpenses: 800,
+
+        // Graduate degree (education credits)
+        hasEducationExpenses: true,
+        educationExpenses: 4000,
+
+        // Retirement
+        has403b: true,
+        retirement403b: 12000,
+
+        // No home ownership
+        ownsHome: false,
+    },
+    expectedOptimizations: [
+        'ret-403b-opportunity',
+        'credits-lifetime-learning',
+    ],
+};
+
+/**
+ * Gig Economy Worker (Multiple 1099s)
+ * Tests multi-platform gig worker with complex SE situation
+ */
+export const GIG_WORKER_PROFILE = {
+    name: 'Gig Economy Worker',
+    description: 'Multi-platform gig worker (rideshare, delivery, freelance)',
+    form: {
+        filingStatus: 'single',
+        state: 'CA',
+
+        // No W-2
+        totalWages: 0,
+
+        // Multiple Schedule C businesses
+        hasScheduleC: true,
+        scheduleC: {
+            grossReceipts: 85000,
+            expenses: 25000,
+            netProfit: 60000,
+            vehicleMiles: 18000,
+            vehicleExpenses: 12000,
+            phoneExpenses: 1200,
+            suppliesExpenses: 500,
+        },
+
+        // Additional 1099 income
+        otherIncome: 5000,
+
+        // Self-employed health insurance
+        selfEmployedHealthInsurance: 6000,
+
+        // No estimated payments (common issue)
+        estimatedTaxPayments: 0,
+
+        // Renter
+        ownsHome: false,
+    },
+    expectedOptimizations: [
+        'se-health-insurance-deduction',
+        'se-sep-ira-opportunity',
+        'se-estimated-payments-warning',
+        'se-qbi-deduction',
+    ],
+};
+
+/**
+ * Early Retiree (FIRE Movement)
+ * Tests 0% capital gains bracket and Roth conversion ladder
+ */
+export const EARLY_RETIREE_PROFILE = {
+    name: 'Early Retiree (FIRE)',
+    description: 'Early retiree living off investments with low income',
+    form: {
+        filingStatus: 'married',
+        state: 'NV',  // No state income tax
+
+        // No wages
+        totalWages: 0,
+
+        // Dividend income
+        ordinaryDividends: 30000,
+        qualifiedDividends: 25000,
+
+        // Capital gains (selling investments for living expenses)
+        hasScheduleD: true,
+        scheduleD: {
+            longTermGain: 45000,
+        },
+
+        // Roth conversion planning
+        traditionalIRABalance: 500000,
+        hasRothIRA: true,
+        rothConversionAmount: 0,  // Not converting yet
+
+        // Some interest
+        taxableInterest: 5000,
+
+        // Age (under 59.5)
+        birthDate: '1985-01-01',
+        age: 40,
+
+        // No home (renting)
+        ownsHome: false,
+    },
+    expectedOptimizations: [
+        'cg-zero-percent-bracket',
+        'ret-roth-conversion-opportunity',
+    ],
+};
+
 /**
  * All test profiles for batch testing
  */
 export const ALL_TEST_PROFILES = [
+    // Original profiles
     HIGH_NET_WORTH_PROFILE,
     FREELANCER_PROFILE,
     REAL_ESTATE_INVESTOR_PROFILE,
@@ -537,6 +780,13 @@ export const ALL_TEST_PROFILES = [
     US_EXPAT_PROFILE,
     NY_PTET_PROFILE,
     REP_QUALIFIED_PROFILE,
+    // New profiles
+    TX_MARGIN_TAX_PROFILE,
+    MFS_COMPARISON_PROFILE,
+    AMT_ISO_PROFILE,
+    TEACHER_PROFILE,
+    GIG_WORKER_PROFILE,
+    EARLY_RETIREE_PROFILE,
 ];
 
 /**
