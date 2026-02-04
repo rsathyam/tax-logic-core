@@ -6,8 +6,6 @@
 export {
     calculateTotalTax,
     calculateTaxWithOverrides,
-    calculateFederalIncomeTax,
-    calculateStateTax,
     calculateSelfEmploymentTax,
     calculateCapitalGainsTax,
     TAX_BRACKETS_2025,

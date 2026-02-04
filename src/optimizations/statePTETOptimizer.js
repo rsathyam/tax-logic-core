@@ -770,16 +770,17 @@ export function analyzeStatePTETOptimizations(form) {
     const partnershipIncome = parseFloat(form.partnershipIncome) || 0;
     const totalPassThrough = k1Income + sCorpIncome + partnershipIncome;
 
-    if (totalPassThrough <= 0) return optimizations;
 
     // ========================================================================
     // Check for state-specific PTET program
     // ========================================================================
     const ptetProgram = STATE_PTET_PROGRAMS[state];
 
-    if (ptetProgram) {
-        const ptetOpt = analyzePTETElection(form, ptetProgram, totalPassThrough, state);
-        if (ptetOpt) optimizations.push(ptetOpt);
+    if (totalPassThrough > 0) {
+        if (ptetProgram) {
+            const ptetOpt = analyzePTETElection(form, ptetProgram, totalPassThrough, state);
+            if (ptetOpt) optimizations.push(ptetOpt);
+        }
     }
 
     // ========================================================================
